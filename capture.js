@@ -27,12 +27,14 @@ var album = document.querySelector('#album')
 var errorTip = document.querySelector('#error')
 var permission = document.querySelector('#permission')
 var permissionBtn = document.querySelector('#permission-btn')
+var reload = document.querySelector('#reload')
 
 
 function startup() {
   permission.style.display = 'none'
   errorTip.innerText = ''
-  navigator.mediaDevices.getUserMedia({video: true, audio: false})
+  let notAuth = false
+  navigator.mediaDevices.getUserMedia({video: { facingMode: "environment"  }, audio: false})
   .then(function(stream) {
     video.srcObject = stream;
     video.play();
@@ -41,7 +43,12 @@ function startup() {
     console.log("An error occurred: " + err);
     errorTip.innerText = err
     permission.style.display = 'block'
+    notAuth = true
   });
+  if(notAuth) {
+    return;
+  }
+
 
   video.addEventListener('canplay', function(ev){
     if (!streaming) {
@@ -124,4 +131,8 @@ albumUpload.addEventListener('click', () => {
 
 
 permissionBtn.addEventListener('click',startup)
+
+reload.addEventListener('click', () => {
+  window.location.reload()
+})
 

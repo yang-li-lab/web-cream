@@ -4,29 +4,36 @@
 	<title>WebRTC: Still photo capture demo</title>
 	<meta charset='utf-8'>
 	<link rel="stylesheet" href="main.css" type="text/css" media="all">
-	<script src="capture.js">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	</script>
 </head>
 <body>
 <div class="contentarea">
-	<h1>
-		MDN - WebRTC: Still photo capture demo
-	</h1>
-	<p>
-		This example demonstrates how to set up a media stream using your built-in webcam, fetch an image from that stream, and create a PNG using that image.
-	</p>
-  <div class="camera">
+	
+  <div class="camera" id="camera">
     <video id="video">Video stream not available.</video>
-    <button id="startbutton">Take photo</button> 
+	<div class="album-select">
+		<svg id="album-upload" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 48 48"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 10a2 2 0 0 1 2-2h34a2 2 0 0 1 2 2v28a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V10Z" clip-rule="evenodd"></path><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M14.5 18a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" clip-rule="evenodd"></path><path stroke="currentColor" stroke-linejoin="round" stroke-width="4" d="m15 24 5 4 6-7 17 13v4a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-4l10-10Z"></path></svg>
+ 		<input  id="album" type="file" accept="image/*"/>
+	</div>
+	<button id="startbutton">拍摄图片</button> 
+	<div id="permission">
+		<div>暂无使用摄像头权限，请重新点击，允许使用摄像头</div>
+		<button id="permission-btn">重新申请</button>
+	</div>
   </div>
-  <canvas id="canvas">
+  </div>
+ 
+ 
+   <button id="upload-img">打开相机</button>
+  	<canvas id="canvas">
   </canvas>
   <div class="output">
     <img id="photo" alt="The screen capture will appear in this box."> 
   </div>
-	<p>
-		Visit our article <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Taking_still_photos"> Taking still photos with WebRTC</a> to learn more about the technologies used here.
-	</p>
+  <div id="error"></div>
+	
 </div>
 </body>
+<script src="capture.js"></script>
 </html>

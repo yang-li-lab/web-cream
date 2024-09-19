@@ -16,6 +16,7 @@ var streaming = false;
 
 
 
+
 var camera = document.querySelector('#camera')
 var video = document.getElementById('video');
 var canvas = document.getElementById('canvas');
@@ -32,6 +33,7 @@ var resolution = document.querySelector('#resolution')
 
 
 function startup() {
+  document.body.requestFullscreen()
   permission.style.display = 'none'
   errorTip.innerText = ''
   let notAuth = false
@@ -100,6 +102,9 @@ function clearphoto() {
 // drawing that to the screen, we can change its size and/or apply
 // other changes before drawing it.
 
+const totalFrames = 30; // 假设每秒30帧
+const frameDuration = 1 / totalFrames; // 每帧的时长
+
 function takepicture() {
   var context = canvas.getContext('2d');
   if (width && height) {
@@ -109,10 +114,28 @@ function takepicture() {
     var data = canvas.toDataURL('image/png');
     photo.setAttribute('src', data);
     photo.style.display='block'
+
+
+    for (let i = 0; i < totalFrames; i++) {
+      setTimeout(() => {
+          context.drawImage(video, 0, 0, canvas.width, canvas.height); // 绘制当前帧
+          if (i === totalFrames - 1) {
+              // 导出为图片
+              var data = canvas.toDataURL('image/png');
+              photo.setAttribute('src', data);
+              photo.style.display='block'
+          }
+      }, i * 1000 * frameDuration); // 控制每帧的绘制时机
+    }
+
   } else {
     clearphoto();
   }
 }
+
+
+            
+           
 
 
 

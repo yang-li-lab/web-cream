@@ -33,7 +33,7 @@ var resolution = document.querySelector('#resolution')
 
 
 function startup() {
-  document.body.requestFullscreen()
+  // document.body.requestFullscreen()
   permission.style.display = 'none'
   errorTip.innerText = ''
   let notAuth = false
@@ -60,6 +60,7 @@ function startup() {
     resolution.innerText = `videoWidth: ${video.videoWidth}, height: ${video.videoHeight}`
     if (!streaming) {
       height = video.videoHeight / (video.videoWidth/width);
+      console.log('height',height)
     
       // Firefox currently has a bug where the height can't be read from
       // the video, so we will make assumptions if this happens.
@@ -67,6 +68,7 @@ function startup() {
       if (isNaN(height)) {
         height = width / (4/3);
       }
+
     
       video.setAttribute('width', width);
       video.setAttribute('height', height);
@@ -92,8 +94,10 @@ function clearphoto() {
   context.fillStyle = "#AAA";
   context.fillRect(0, 0, canvas.width, canvas.height);
 
-  var data = canvas.toDataURL('image/png');
+  console.log('height',height)
+  var data = canvas.toDataURL('image/png', 1);
   photo.setAttribute('src', data);
+  photo.setAttribute('width', width);
 }
 
 // Capture a photo by fetching the current contents of the video
@@ -106,31 +110,49 @@ const totalFrames = 30; // 假设每秒30帧
 const frameDuration = 1 / totalFrames; // 每帧的时长
 
 function takepicture() {
-  var context = canvas.getContext('2d');
-  if (width && height) {
-    canvas.width = width;
-    canvas.height = height;
-    context.drawImage(video, 0, 0, width, height);
-    var data = canvas.toDataURL('image/png');
-    photo.setAttribute('src', data);
+  html2canvas(video).then(function(canvas) {
+    const url =  canvas.toDataURL({format: 'image/png', quality:1, width:14000, height:4000})
+    photo.setAttribute('src', url);
     photo.style.display='block'
+    console.log('width',width)
+    console.log('height',height)
+    photo.setAttribute('width', width);
+    photo.setAttribute('height', height);
 
 
-    for (let i = 0; i < totalFrames; i++) {
-      setTimeout(() => {
-          context.drawImage(video, 0, 0, canvas.width, canvas.height); // 绘制当前帧
-          if (i === totalFrames - 1) {
-              // 导出为图片
-              var data = canvas.toDataURL('image/png');
-              photo.setAttribute('src', data);
-              photo.style.display='block'
-          }
-      }, i * 1000 * frameDuration); // 控制每帧的绘制时机
-    }
+       var dlLink = document.createElement('a');
+  dlLink.download = "fileName";
+  dlLink.href = url;
+  dlLink.dataset.downloadurl = url;
+  document.body.appendChild(dlLink);
+  dlLink.click();
+  document.body.removeChild(dlLink);
+  })
+  // var context = canvas.getContext('2d');
+  // if (width && height) {
+  //   canvas.width = width;
+  //   canvas.height = height;
+  //   context.drawImage(video, 0, 0, width, height);
+  //   var data = canvas.toDataURL('image/png');
+  //   photo.setAttribute('src', data);
+  //   photo.style.display='block'
 
-  } else {
-    clearphoto();
-  }
+
+  //   for (let i = 0; i < totalFrames; i++) {
+  //     setTimeout(() => {
+  //         context.drawImage(video, 0, 0, canvas.width, canvas.height); // 绘制当前帧
+  //         if (i === totalFrames - 1) {
+  //             // 导出为图片
+  //             var data = canvas.toDataURL('image/png');
+  //             photo.setAttribute('src', data);
+  //             photo.style.display='block'
+  //         }
+  //     }, i * 1000 * frameDuration); // 控制每帧的绘制时机
+  //   }
+
+  // } else {
+  //   clearphoto();
+  // }
 }
 
 

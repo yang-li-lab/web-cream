@@ -28,13 +28,17 @@ var errorTip = document.querySelector('#error')
 var permission = document.querySelector('#permission')
 var permissionBtn = document.querySelector('#permission-btn')
 var reload = document.querySelector('#reload')
+var resolution = document.querySelector('#resolution')
 
 
 function startup() {
   permission.style.display = 'none'
   errorTip.innerText = ''
   let notAuth = false
-  navigator.mediaDevices.getUserMedia({video: { facingMode: "environment"  }, audio: false})
+  navigator.mediaDevices.getUserMedia({video: { 
+    facingMode: "environment",  
+    width: 1280, height: 720
+  }, audio: false})
   .then(function(stream) {
     video.srcObject = stream;
     video.play();
@@ -51,6 +55,7 @@ function startup() {
 
 
   video.addEventListener('canplay', function(ev){
+    resolution.innerText = `videoWidth: ${video.videoWidth}, height: ${video.videoHeight}`
     if (!streaming) {
       height = video.videoHeight / (video.videoWidth/width);
     
